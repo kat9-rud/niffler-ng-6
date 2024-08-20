@@ -1,25 +1,31 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@WebTest
 public class RegistrationTest {
     private static final Config CFG = Config.getInstance();
+    private static final Faker faker = new Faker();
+
     @Test
     void newUserShouldBeSuccessfullyRegistered(){
-        String username = "sauron";
+        String newUsername = faker.name().username();
         String password = "12345";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .createNewAccount()
-                .setUsername(username)
+                .setUsername(newUsername)
                 .setPassword(password)
                 .setPasswordSubmit(password)
                 .submitRegistration()
                 .proceedToLogin()
-                .login(username, password)
+                .login(newUsername, password)
                 .checkPageIsCorrectlyDisplayed();
     }
 
@@ -45,12 +51,12 @@ public class RegistrationTest {
 
     @Test
     void errorMessageShouldBeDisplayedIfPasswordAndConfirmPasswordAreNotIdentical(){
-        String username = "harry";
+        String newUsername = faker.name().username();
         String password = "12345";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .createNewAccount()
-                .setUsername(username)
+                .setUsername(newUsername)
                 .setPassword(password)
                 .setPasswordSubmit("5555")
                 .submitRegistration()
@@ -59,7 +65,6 @@ public class RegistrationTest {
 
     @Test
     void newUserRegisterShouldFailIfRequiredFieldsAreEmpty(){
-        String username = "snape";
         String password = "12345";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
