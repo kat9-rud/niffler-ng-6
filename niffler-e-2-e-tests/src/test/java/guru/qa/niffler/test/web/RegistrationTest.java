@@ -3,15 +3,13 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 
-public class RegistrationWebTest {
+public class RegistrationTest {
     private static final Config CFG = Config.getInstance();
-
     @Test
     void newUserShouldBeSuccessfullyRegistered(){
-        String username = "ron";
+        String username = "sauron";
         String password = "12345";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -27,7 +25,7 @@ public class RegistrationWebTest {
 
     @Test
     void newUserWithExistingUsernameShouldNotBeRegistered(){
-        String username = "ben";
+        String username = "galadriel";
         String password = "12345";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)

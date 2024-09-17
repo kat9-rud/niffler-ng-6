@@ -3,10 +3,9 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 
-public class LoginWebTest {
+public class LoginTest {
     private static final Config CFG = Config.getInstance();
     @Test
     void mainPageShouldBeDisplayedAfterSuccessfulLogin(){

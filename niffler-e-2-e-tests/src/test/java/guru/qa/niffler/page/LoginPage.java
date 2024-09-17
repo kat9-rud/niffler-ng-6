@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
@@ -13,6 +14,17 @@ public class LoginPage {
     usernameInput.setValue(username);
     passwordInput.setValue(password);
     submitButton.click();
+
     return new MainPage();
+  }
+
+  public RegisterPage createNewAccount(){
+    $(byText("Create new account")).click();
+
+    return new RegisterPage();
+  }
+
+  private boolean errorMessageIsDisplayed(){
+    return $(byText("error")).isDisplayed();
   }
 }
