@@ -3,6 +3,8 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
@@ -11,7 +13,6 @@ public class ProfilePage {
   private final SelenideElement usernameInput = $("input#username]");
   private final SelenideElement nameInput = $("input#name]");
   private final SelenideElement saveChangesButton = $("button[type='submit']");
-  private final SelenideElement uploadNewPictureButton = $("[for='image__input'] > span");
   private final SelenideElement showArchivedCheckbox = $("[type='checkbox']");
   private final SelenideElement addNewCategoryInput = $("input#category");
   private final ElementsCollection categories = $$("form:has(#category)~div");
@@ -22,21 +23,21 @@ public class ProfilePage {
     nameInput.setValue(name);
     return this;
   }
+
   public ProfilePage saveChanges(){
     saveChangesButton.click();
     return this;
   }
-  public ProfilePage enableShowArchived(){
-    if (showArchivedCheckbox.is(not(checked)))
-      showArchivedCheckbox.click();
 
+  public ProfilePage enableShowArchived(){
+    showArchivedCheckbox.click();
+    showArchivedCheckbox.shouldBe(checked, Duration.ofSeconds(5));
     return this;
   }
 
   public ProfilePage disableShowArchived(){
-    if (showArchivedCheckbox.is(checked))
-      showArchivedCheckbox.click();
-
+    showArchivedCheckbox.click();
+    showArchivedCheckbox.shouldNotBe(checked, Duration.ofSeconds(5));
     return this;
   }
 
@@ -68,11 +69,14 @@ public class ProfilePage {
     return this;
   }
 
-  public ProfilePage uploadNewPicture(String file){
-
+  public ProfilePage uploadNewPicture(){
+    $("input[type='file']").uploadFromClasspath("cat_avatar.jpg");
+    $(".MuiContainer-root .MuiAvatar-root img").should(exist, Duration.ofSeconds(5));
     return this;
   }
 
-  public void checkThatCategoryPresentInCategoriesList(String name) {
+  public ProfilePage checkThatCategoryPresentInCategoriesList(String name){
+    $$(".MuiChip-label").find(text(name)).shouldBe(visible, Duration.ofSeconds(5));
+    return this;
   }
 }

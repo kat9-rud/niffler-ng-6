@@ -28,12 +28,12 @@ public class MainPage {
     return new ProfilePage();
   }
 
-  public void checkMainPageIsCorrectlyDisplayed() {
+  public void checkPageIsCorrectlyDisplayed() {
     $(byText("Statistics")).should(visible);
     $(byText("History of Spendings")).should(visible);
   }
 
-  public void checkMainPageIsNotDisplayed() {
+  public void checkPageIsNotDisplayed() {
     $(byText("Statistics")).shouldNot(exist);
     $(byText("History of Spendings")).shouldNot(exist);
   }

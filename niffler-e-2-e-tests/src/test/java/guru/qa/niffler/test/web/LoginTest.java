@@ -11,13 +11,13 @@ public class LoginTest {
     void mainPageShouldBeDisplayedAfterSuccessfulLogin(){
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("duck", "1234")
-                .checkMainPageIsCorrectlyDisplayed();
+                .checkPageIsCorrectlyDisplayed();
     }
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials(){
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("111", "111")
-                .checkMainPageIsNotDisplayed();
+                .checkPageIsNotDisplayed();
     }
 }

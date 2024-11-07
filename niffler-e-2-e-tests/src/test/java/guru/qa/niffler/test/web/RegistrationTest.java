@@ -20,7 +20,7 @@ public class RegistrationTest {
                 .submitRegistration()
                 .proceedToLogin()
                 .login(username, password)
-                .checkMainPageIsCorrectlyDisplayed();
+                .checkPageIsCorrectlyDisplayed();
     }
 
     @Test

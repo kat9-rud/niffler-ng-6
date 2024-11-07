@@ -12,21 +12,24 @@ public class RegisterPage {
   private final SelenideElement passwordSubmitInput = $("input#passwordSubmit");
   private final SelenideElement signUpButton = $("button[type='submit']");
   private final SelenideElement signInButton = $("a[class='form_sign-in']");
+
   public RegisterPage setUsername(String username){
     usernameInput.setValue(username);
     return this;
   }
+
   public RegisterPage setPassword(String password){
     passwordInput.setValue(password);
     return this;
   }
+
   public RegisterPage setPasswordSubmit(String password){
     passwordSubmitInput.setValue(password);
     return this;
   }
+
   public RegisterPage submitRegistration(){
     signUpButton.click();
-
     return this;
   }
 

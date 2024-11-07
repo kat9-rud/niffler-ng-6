@@ -19,9 +19,9 @@ public class CreateCategoryExtension implements BeforeEachCallback, ParameterRes
                         category -> {
                             CategoryJson categoryJson = new CategoryJson(
                                     null,
-                                    generateRandomCategoryName(),
+                                    category.name().equals("") ? generateRandomCategoryName() : category.name(),
                                     category.username(),
-                                    category.archived()
+                                    false
                             );
                             CategoryJson createdCategory = spendApiClient.createCategory(categoryJson);
                             if (category.archived()){
