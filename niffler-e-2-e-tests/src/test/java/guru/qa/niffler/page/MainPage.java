@@ -28,6 +28,12 @@ public class MainPage {
     return new ProfilePage();
   }
 
+  public FriendsPage openFriends(){
+    menuButton.click();
+    menuItems.find(text("Friends")).$("a").click();
+    return new FriendsPage();
+  }
+
   public void checkPageIsCorrectlyDisplayed() {
     $(byText("Statistics")).should(visible);
     $(byText("History of Spendings")).should(visible);
