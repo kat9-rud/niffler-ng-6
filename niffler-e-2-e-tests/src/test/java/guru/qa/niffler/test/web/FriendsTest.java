@@ -18,13 +18,11 @@ public class FriendsTest {
 
   @Test
   @ExtendWith(UsersQueueExtension.class)
-  void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user, @UserType(EMPTY) StaticUser user2) {
+  void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .login(user.username(), user.password())
             .openFriends()
             .checkThatFriendIsPresentInFriendsTable(user.friend());
-    System.out.println(user);
-    System.out.println(user2);
   }
 
   @Test

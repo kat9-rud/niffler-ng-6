@@ -60,12 +60,7 @@ public class UsersQueueExtension implements
                     StopWatch sw = StopWatch.createStarted();
 
                     while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                        user = switch (ut.value()) {
-                            case UserType.Type.EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
-                            case UserType.Type.WITH_FRIEND -> Optional.ofNullable(WITH_FRIEND_USERS.poll());
-                            case UserType.Type.WITH_INCOME_REQUEST -> Optional.ofNullable(WITH_INCOME_REQUEST_USERS.poll());
-                            case UserType.Type.WITH_OUTCOME_REQUEST -> Optional.ofNullable(WITH_OUTCOME_REQUEST_USERS.poll());
-                        };
+                        user = Optional.ofNullable(getUserQueue(ut).poll());
                     }
 
                     Allure.getLifecycle().updateTestCase(testCase ->
@@ -92,22 +87,18 @@ public class UsersQueueExtension implements
                 Map.class);
 
         for (Map.Entry<UserType, StaticUser> e : map.entrySet()){
-            UserType.Type type = e.getKey().value();
-            switch(type){
-                case UserType.Type.EMPTY:
-                    EMPTY_USERS.add(e.getValue());
-                    break;
-                case UserType.Type.WITH_FRIEND:
-                    WITH_FRIEND_USERS.add(e.getValue());
-                    break;
-                case UserType.Type.WITH_INCOME_REQUEST:
-                    WITH_INCOME_REQUEST_USERS.add(e.getValue());
-                    break;
-                case UserType.Type.WITH_OUTCOME_REQUEST:
-                    WITH_OUTCOME_REQUEST_USERS.add(e.getValue());
-                    break;
-            }
+            UserType type = e.getKey();
+            getUserQueue(type).add(e.getValue());
         }
+    }
+
+    private static Queue<StaticUser> getUserQueue(UserType type){
+        return switch (type.value()) {
+            case UserType.Type.EMPTY -> EMPTY_USERS;
+            case UserType.Type.WITH_FRIEND -> WITH_FRIEND_USERS;
+            case UserType.Type.WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS;
+            case UserType.Type.WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS;
+        };
     }
 
     @Override
