@@ -1,16 +1,14 @@
 package guru.qa.niffler.jupiter.extension;
 
-import com.github.javafaker.Faker;
 import guru.qa.niffler.api.SpendApiClient;
-import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
+
+import java.util.Arrays;
+
+import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
 
 public class CategoryExtension implements
     BeforeEachCallback,
@@ -18,38 +16,41 @@ public class CategoryExtension implements
     ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
-  private static final Faker faker = new Faker();
 
   private final SpendApiClient spendApiClient = new SpendApiClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
+        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(anno -> {
-                            CategoryJson category = new CategoryJson(
+                    Arrays.stream(anno.categories())
+                            .findFirst()
+                            .map(category -> new CategoryJson(
                                     null,
-                                    faker.animal().name(),
+                                    randomCategoryName(),
                                     anno.username(),
                                     false
-                            );
-                            CategoryJson createdCategory = spendApiClient.createCategory(category);
-                            if (anno.archived()){
-                                CategoryJson archivedCategory = new CategoryJson(
-                                        createdCategory.id(),
-                                        createdCategory.name(),
-                                        createdCategory.username(),
-                                        true
-                                );
-                                createdCategory = spendApiClient.updateCategory(archivedCategory);
-                            }
-                            context.getStore(NAMESPACE).put(context.getUniqueId(), createdCategory);
-                        });
-  }
+                            ))
+                            .ifPresent(category -> {
+                                CategoryJson createdCategory = spendApiClient.createCategory(category);
+                                if (category.archived()) {
+                                    CategoryJson archivedCategory = new CategoryJson(
+                                            createdCategory.id(),
+                                            createdCategory.name(),
+                                            createdCategory.username(),
+                                            true
+                                    );
+                                    createdCategory = spendApiClient.updateCategory(archivedCategory);
+                                }
+                                context.getStore(NAMESPACE).put(context.getUniqueId(), createdCategory);
+                            });
+                });
+    }
 
   @Override
   public void afterTestExecution(ExtensionContext context) throws Exception {
     CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-    if (!category.archived()) {
+    if (category !=null && !category.archived()) {
       category = new CategoryJson(
           category.id(),
           category.name(),
